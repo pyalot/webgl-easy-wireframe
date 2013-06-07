@@ -90,11 +90,11 @@ exports.Application = class
             .draw(@geom)
 
     drawTransparent: ->
+        gl.enable gl.SAMPLE_ALPHA_TO_COVERAGE
+        gl.enable gl.BLEND
+        gl.blendFunc gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA
         @transparent.use()
             .mat4('proj', @camera.proj)
             .mat4('view', @camera.view)
             .draw(@geom)
-        gl.enable gl.SAMPLE_ALPHA_TO_COVERAGE
-        gl.enable gl.BLEND
-        gl.blendFunc gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA
 

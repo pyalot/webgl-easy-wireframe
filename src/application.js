@@ -124,10 +124,10 @@ exports.Application = (function() {
   };
 
   _Class.prototype.drawTransparent = function() {
-    this.transparent.use().mat4('proj', this.camera.proj).mat4('view', this.camera.view).draw(this.geom);
     gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
     gl.enable(gl.BLEND);
-    return gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    return this.transparent.use().mat4('proj', this.camera.proj).mat4('view', this.camera.view).draw(this.geom);
   };
 
   return _Class;

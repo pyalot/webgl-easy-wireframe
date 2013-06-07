@@ -1420,10 +1420,10 @@ exports.Application = (function() {
   };
 
   _Class.prototype.drawTransparent = function() {
-    this.transparent.use().mat4('proj', this.camera.proj).mat4('view', this.camera.view).draw(this.geom);
     gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
     gl.enable(gl.BLEND);
-    return gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    return this.transparent.use().mat4('proj', this.camera.proj).mat4('view', this.camera.view).draw(this.geom);
   };
 
   return _Class;
@@ -1803,6 +1803,34 @@ MouseDrag = (function() {
       if (_this.pressed && event.which === _this.which) {
         x = event.pageX;
         y = event.pageY;
+        _this.x += x - _this.lx;
+        _this.y += y - _this.ly;
+        _this.lx = x;
+        _this.ly = y;
+      }
+      return void 0;
+    });
+    $(document).bind('touchstart', function(event) {
+      var target, touch;
+      target = event.originalEvent.target;
+      console.log(target.id);
+      touch = event.originalEvent.touches[0];
+      _this.pressed = true;
+      _this.lx = touch.pageX;
+      _this.ly = touch.pageY;
+      return void 0;
+    });
+    $(document).bind('touchend', function(event) {
+      _this.pressed = false;
+      return void 0;
+    });
+    $(document).bind('touchmove', function(event) {
+      var touch, x, y;
+      event.preventDefault();
+      if (_this.pressed) {
+        touch = event.originalEvent.touches[0];
+        x = touch.pageX;
+        y = touch.pageY;
         _this.x += x - _this.lx;
         _this.y += y - _this.ly;
         _this.lx = x;
@@ -2856,7 +2884,7 @@ return Shader = (function() {
         shaders[type] += '#line ' + i + '\n' + line + '\n';
       }
     }
-    directives = ['precision highp int;', 'precision highp float;', 'precision highp vec2;', 'precision highp vec3;', 'precision highp vec4;'].join('\n') + '\n';
+    directives = ['#ifdef GL_FRAGMENT_PRECISION_HIGH', 'precision highp int;', 'precision highp float;', '#else', 'precision mediump int;', 'precision mediump float;', '#endif'].join('\n') + '\n';
     shaders.fragment = directives + shaders.global + shaders.fragment;
     shaders.vertex = directives + shaders.global + shaders.vertex;
     return shaders;

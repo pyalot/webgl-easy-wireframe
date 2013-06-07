@@ -1,0 +1,5 @@
+debug
+packed/main.js
+*.pyc
+.DS_Store
+*.swp
